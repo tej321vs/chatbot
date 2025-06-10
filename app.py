@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import google.generativeai as genai
 
@@ -9,6 +9,10 @@ chat = model.start_chat(history=[])
 
 app = Flask(__name__)
 CORS(app)
+
+@app.route('/')
+def serve_html():
+    return send_from_directory('.', 'index.html')
 
 @app.route('/chat', methods=['POST'])
 def chat_with_bot():
