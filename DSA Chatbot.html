@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)file:///C:/venky/Algoverse/sample/index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>DSA Chatbot</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      height: 100vh;
+      background: #0f172a;
+      color: white;
+    }
+    .sidebar {
+      width: 260px;
+      background: #1e293b;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-right: 1px solid #334155;
+      transition: transform 0.3s ease;
+    }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+      position: absolute;
+      z-index: 10;
+    }
+    .chat-history {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .chat-item {
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #334155;
+      margin-bottom: 6px;
+    }
+    .chat-item:hover {
+      background: #475569;
+    }
+    .chat-item span {
+      float: right;
+      color: #f87171;
+      cursor: pointer;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .message {
+      max-width: 70%;
+      padding: 14px 18px;
+      margin: 10px 0;
+      border-radius: 18px;
+      font-size: 16px;
+      line-height: 1.6;
+      word-wrap: break-word;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .user { align-self: flex-end; background: #4ade80; color: black; }
+    .bot { align-self: flex-start; background: #334155; }
+    .input-area {
+      display: flex;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+      border-top: 1px solid #475569;
+      align-items: center;
+    }
+    #userInput {
+      flex: 1;
+      padding: 14px 20px;
+      font-size: 16px;
+      border-radius: 999px;
+      border: none;
+      background: #1e293b;
+      color: white;
+    }
+    #sendBtn, #micBtn {
+      margin-left: 12px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 18px;
+      padding: 12px;
+      cursor: pointer;
+    }
+    #status {
+      text-align: center;
+      font-style: italic;
+      color: #38bdf8;
+      font-size: 14px;
+      height: 20px;
+    }
+    .regen-btn {
+      margin-top: 5px;
+      background: #0ea5e9;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .toggle-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 20;
+      background: #1e293b;
+      color: white;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar hidden" id="sidebar">
+    <button onclick="newChat()">+ New Chat</button>
+    <div class="chat-history" id="historyList"><div class="chat-item">Chat 1 <span onclick="deleteChat(0)">🗑</span></div><div class="chat-item">Chat 2 <span onclick="deleteChat(1)">🗑</span></div></div>
+  </div>
+
+  <!-- Main Chat Window -->
+  <div class="main">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="chat-container" id="chatBox"><div class="message user">stack</div><div class="message bot">A stack is a fundamental data structure that follows the **LIFO (Last-In, First-Out)** principle.  Imagine a stack of plates: you can only add a new plate to the top, and you can only remove the plate from the top.
+
+**Key Operations:**
+
+* **Push:** Adds an element to the top of the stack.
+* **Pop:** Removes and returns the element at the top of the stack.
+* **Peek (or Top):** Returns the element at the top of the stack without removing it.
+* **IsEmpty:** Checks if the stack is empty.
+* **IsFull:** (For bounded stacks) Checks if the stack is full.
+
+
+**Diagram:**
+
+Imagine a stack as a vertical column:
+
+```
+[Top]  4
+      3
+      2
+      1
+[Bottom]
+```
+
+* `Push(5)` would add 5 to the top:
+
+```
+[Top]  5
+      4
+      3
+      2
+      1
+[Bottom]
+```
+
+* `Pop()` would remove 5:
+
+```
+[Top]  4
+      3
+      2
+      1
+[Bottom]
+```
+
+* `Peek()` would return 4 (without removing it).
+
+
+**Implementation Examples (Python):**
+
+**1. Using a List:**
+
+Python lists can easily be used to simulate a stack because the `append()` method adds to the end (which acts as the top of the stack), and `pop()` removes from the end.
+
+```python
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        if not self.is_empty():
+            return self.items.pop()
+        else:
+            return None # Or raise an exception
+
+    def peek(self):
+        if not self.is_empty():
+            return self.items[-1]
+        else:
+            return None # Or raise an exception
+
+    def is_empty(self):
+        return len(self.items) == 0
+
+    def size(self):
+      return len(self.items)
+
+
+s = Stack()
+s.push(10)
+s.push(20)
+s.push(30)
+print(f"Size: {s.size()}") # Output: Size: 3
+print(s.pop())  # Output: 30
+print(s.peek()) # Output: 20
+print(s.is_empty()) # Output: False
+```
+
+**Applications of Stacks:**
+
+* **Function call stack:**  Managing function calls and their local variables.
+* **Expression evaluation:**  Evaluating arithmetic expressions (infix to postfix conversion).
+* **Undo/Redo functionality:**  Storing previous states for undo operations.
+* **Backtracking algorithms:**  Exploring different possibilities in algorithms like Depth-First Search (DFS).
+* **Memory management:**  Implementing stack-based memory allocation.
+
+
+**Time Complexity (using lists):**
+
+* Push: O(1)
+* Pop: O(1)
+* Peek: O(1)
+* IsEmpty: O(1)
+
+
+The list-based implementation is generally sufficient for most stack applications due to its simplicity and efficiency.  More complex implementations might be needed in specialized scenarios (e.g., handling very large stacks or stacks with specific constraints).
+<br><button class="regen-btn">🔄 Regenerate</button></div><div class="message user">queue</div><div class="message bot">A queue is a linear data structure that follows the **FIFO (First-In, First-Out)** principle.  This means the first element added to the queue is the first one to be removed.  Think of it like a line at a store – the first person in line is the first person served.
+
+**Key Operations:**
+
+* **Enqueue:** Adds an element to the rear (back) of the queue.
+* **Dequeue:** Removes and returns the element at the front of the queue.
+* **Peek (or Front):** Returns the element at the front of the queue without removing it.
+* **IsEmpty:** Checks if the queue is empty.
+* **IsFull:** (For bounded queues) Checks if the queue has reached its maximum capacity.
+
+
+**Diagram:**
+
+We can visualize a queue as a horizontal line:
+
+```
+[Front]  1  &lt;--  2  &lt;--  3  &lt;--  4  [Rear]
+```
+
+* **Enqueue(5):** Adds 5 to the rear:  `[Front] 1 &lt;-- 2 &lt;-- 3 &lt;-- 4 &lt;-- 5 [Rear]`
+* **Dequeue():** Removes 1 from the front: `[Front] 2 &lt;-- 3 &lt;-- 4 &lt;-- 5 [Rear]`
+* **Peek():** Returns 2 (without removing it).
+
+
+**Implementation Examples (Python):**
+
+**1. Using a List (Less Efficient):**
+
+While possible, using a Python list directly for a queue is less efficient for large queues because `pop(0)` (removing from the front) has O(n) time complexity.
+
+```python
+class QueueList:
+    def __init__(self):
+        self.items = []
+
+    def enqueue(self, item):
+        self.items.append(item)
+
+    def dequeue(self):
+        if not self.is_empty():
+            return self.items.pop(0)
+        else:
+            return None  # Or raise an exception
+
+    def peek(self):
+        if not self.is_empty():
+            return self.items[0]
+        else:
+            return None  # Or raise an exception
+
+    def is_empty(self):
+        return len(self.items) == 0
+
+    def size(self):
+        return len(self.items)
+
+q = QueueList()
+q.enqueue(10)
+q.enqueue(20)
+q.enqueue(30)
+print(q.dequeue())  # Output: 10
+print(q.peek())   # Output: 20
+print(q.is_empty()) # Output: False
+print(q.size()) #Output: 2
+```
+
+**2. Using `collections.deque` (More Efficient):**
+
+Python's `collections.deque` is designed for fast appends and pops from both ends, making it the preferred choice for queue implementations.
+
+```python
+from collections import deque
+
+q = deque()
+q.append(10)
+q.append(20)
+q.append(30)
+print(q.popleft())  # Output: 10
+print(q[0])         # Output: 20 (peek)
+print(len(q))       # Output: 2 (size)
+```
+
+
+**Applications of Queues:**
+
+* **Breadth-First Search (BFS) in graphs:** Exploring nodes level by level.
+* **Task scheduling:** Managing processes waiting for CPU time.
+* **Buffering:** Storing data temporarily before processing.
+* **Print queue:** Managing print jobs.
+* **Asynchronous programming:** Handling events and callbacks.
+
+
+**Time Complexity (using `collections.deque`):**
+
+* Enqueue: O(1)
+* Dequeue: O(1)
+* Peek: O(1)
+* IsEmpty: O(1)
+
+
+The `collections.deque` implementation offers significantly better performance than the list-based approach, especially for large queues.  Therefore, it's strongly recommended for most applications.  The list-based example is mainly for illustrating the basic queue concept.
+<br><button class="regen-btn">🔄 Regenerate</button></div><div class="message user">binary search</div><div class="message bot">Binary search is a highly efficient algorithm for finding a specific element within a *sorted* array or list.  It works by repeatedly dividing the search interval in half.  If the target value is less than the middle element, the search continues in the lower half; otherwise, it continues in the upper half.  This process is repeated until the target value is found or the search interval is empty.
+
+**Algorithm Steps:**
+
+1. **Start with a sorted array.**  Binary search only works on sorted data.
+
+2. **Find the middle element.** Calculate the middle index of the current search interval.
+
+3. **Compare:** Compare the middle element with the target value.
+
+   * **If they are equal:** The target value is found.  Return the index.
+   * **If the target value is less than the middle element:** Continue searching in the lower half of the array (from the start index to the middle index - 1).
+   * **If the target value is greater than the middle element:** Continue searching in the upper half of the array (from the middle index + 1 to the end index).
+
+4. **Repeat:** Steps 2 and 3 are repeated until the target value is found or the search interval becomes empty (meaning the target value is not present).
+
+
+**Example:**
+
+Let's search for the value `12` in the sorted array: `[2, 5, 7, 11, 12, 15, 18, 20]`
+
+1. **Initial interval:** [0, 7]  (indices)
+2. **Middle element:** `(0 + 7) // 2 = 3`  The middle element is 11.
+3. **Comparison:** 12 &gt; 11, so search in the upper half: [4, 7]
+4. **Middle element:** `(4 + 7) // 2 = 5`  The middle element is 15.
+5. **Comparison:** 12 &lt; 15, so search in the lower half: [4, 4]
+6. **Middle element:** `(4 + 4) // 2 = 4` The middle element is 12.
+7. **Comparison:** 12 == 12, the target is found at index 4.
+
+
+**Diagram:**
+
+```
+[2, 5, 7, 11, 12, 15, 18, 20]
+       ^
+       |
+   middle element (11)
+
+[2, 5, 7, 11, 12, 15, 18, 20]
+              ^
+              |
+          middle element (15)
+
+[2, 5, 7, 11, 12, 15, 18, 20]
+          ^
+          |
+      middle element (12)  &lt;- Found!
+```
+
+
+**Python Code Implementation:**
+
+```python
+def binary_search(arr, target):
+    low = 0
+    high = len(arr) - 1
+
+    while low &lt;= high:
+        mid = (low + high) // 2  # Integer division
+
+        if arr[mid] == target:
+            return mid  # Target found at index </div><div class="message user">explain about Quicksort</div><div class="message bot">Quicksort is a highly efficient sorting algorithm that uses a divide-and-conquer approach.  It's known for its average-case time complexity of O(n log n), but its worst-case time complexity is O(n²), which makes the choice of pivot crucial.
+
+**Algorithm Steps:**
+
+1. **Choose a pivot:** Select an element from the array to be the pivot.  The choice of pivot significantly impacts performance (more on this later).
+
+2. **Partition:** Rearrange the array so that all elements less than the pivot are placed before it, and all elements greater than the pivot are placed after it.  The pivot is now in its final sorted position.
+
+3. **Recurse:** Recursively apply steps 1 and 2 to the sub-array of elements less than the pivot and the sub-array of elements greater than the pivot.  This continues until all sub-arrays have a single element (which is inherently sorted).
+
+
+**Example:**
+
+Let's sort the array `[8, 3, 1, 7, 0, 10, 2]` using Quicksort.  We'll use the first element as the pivot for simplicity (though this isn't always the best strategy).
+
+**1. Choose Pivot:**  Pivot = 8
+
+**2. Partition:**
+
+We'll rearrange the array so elements smaller than 8 come before it, and larger elements come after.  There a</div></div>
+    <div id="status"></div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your message...">
+      <button id="micBtn" onclick="toggleMicOptions()">🎤</button>
+      <button id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+
+  <!-- Mic Options Box -->
+  <div id="micOptions" style="display: none; position: absolute; bottom: 80px; right: 20px; background: rgb(30, 41, 59); padding: 10px; border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 8px; z-index: 99;">
+    <button onclick="startVoiceInput()" style="display:block;margin-bottom:8px;">🎙 Take Input</button>
+    <button onclick="enableVoiceOutput()" style="display:block;margin-bottom:8px;">🔊 Read Response</button>
+    <button onclick="disableMic()" style="display:block;">❌ Disable Mic</button>
+  </div>
+
+<script>
+  const API_URL = 'http://localhost:3000/chat';
+  const chatBox = document.getElementById('chatBox');
+  const status = document.getElementById('status');
+  const historyList = document.getElementById('historyList');
+  const sidebar = document.getElementById('sidebar');
+
+  let voiceInputEnabled = false;
+  let voiceOutputEnabled = false;
+  let chats = [];
+  let currentChat = [];
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('hidden');
+  }
+
+  function toggleMicOptions() {
+    const options = document.getElementById('micOptions');
+    options.style.display = options.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function disableMic() {
+    voiceInputEnabled = false;
+    voiceOutputEnabled = false;
+    alert("🎤 Mic Disabled");
+    document.getElementById('micOptions').style.display = 'none';
+  }
+
+  function enableVoiceOutput() {
+    voiceOutputEnabled = true;
+    alert("🔊 Voice output enabled");
+    document.getElementById('micOptions').style.display = 'none';
+  }
+
+  function startVoiceInput() {
+    voiceInputEnabled = true;
+    document.getElementById('micOptions').style.display = 'none';
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.start();
+
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      document.getElementById('userInput').value = transcript;
+      sendMessage();
+    };
+
+    recognition.onerror = function(event) {
+      alert("❌ Voice input failed: " + event.error);
+    };
+  }
+
+  function appendMessage(message, type, isFinal = true) {
+    const msg = document.createElement('div');
+    msg.className = 'message ' + type;
+    chatBox.appendChild(msg);
+
+    if (type === 'bot') {
+      let index = 0;
+      function typeLine() {
+        if (index < message.length) {
+          msg.textContent += message.charAt(index++);
+          setTimeout(typeLine, 20);
+        } else {
+          const regen = document.createElement('button');
+          regen.className = 'regen-btn';
+          regen.textContent = "🔄 Regenerate";
+          regen.onclick = () => regenerateResponse(currentChat[currentChat.length - 1]);
+          msg.appendChild(document.createElement('br'));
+          msg.appendChild(regen);
+        }
+      }
+      typeLine();
+    } else {
+      msg.textContent = message;
+    }
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('userInput');
+    const message = input.value.trim();
+    if (!message) return;
+
+    appendMessage(message, 'user');
+    currentChat.push(message);
+    input.value = '';
+    status.textContent = 'Analyzing...';
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await res.json();
+      status.textContent = '';
+      if (res.ok) {
+        appendMessage(data.reply, 'bot');
+        currentChat.push(data.reply);
+        if (voiceOutputEnabled) speak(data.reply);
+      } else {
+        appendMessage(`❌ ${data.error}`, 'bot');
+      }
+    } catch (err) {
+      appendMessage('❌ Server error.', 'bot');
+      status.textContent = '';
+    }
+  }
+
+  function regenerateResponse(lastUserMessage) {
+    document.getElementById('userInput').value = lastUserMessage;
+    sendMessage();
+  }
+
+  function speak(text) {
+    if (voiceOutputEnabled) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  function newChat() {
+    if (currentChat.length > 0) {
+      chats.push([...currentChat]);
+      renderHistory();
+    }
+    currentChat = [];
+    chatBox.innerHTML = '';
+  }
+
+  function renderHistory() {
+    historyList.innerHTML = '';
+    chats.forEach((chat, index) => {
+      const div = document.createElement('div');
+      div.className = 'chat-item';
+      div.innerHTML = `Chat ${index + 1} <span onclick="deleteChat(${index})">🗑</span>`;
+      div.onclick = () => loadChat(index);
+      historyList.appendChild(div);
+    });
+  }
+
+  function loadChat(index) {
+    currentChat = [...chats[index]];
+    chatBox.innerHTML = '';
+    for (let i = 0; i < currentChat.length; i++) {
+      appendMessage(currentChat[i], i % 2 === 0 ? 'user' : 'bot', false);
+    }
+  }
+
+  function deleteChat(index) {
+    chats.splice(index, 1);
+    renderHistory();
+  }
+
+  document.getElementById('userInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendMessage();
+  });
+</script>
+
+
+</body></html>
